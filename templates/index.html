@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Barrel Structural Health Monitoring Console</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="/static/script.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top, #0e1b2e, #050b16);
+            color: #d1d5db;
+        }
+
+        .container {
+            padding: 25px 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .value {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .chart-wrapper {
+            height: 300px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th, table td {
+            padding: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #initModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #initBox {
+            background: #111827;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input {
+            padding: 6px;
+            width: 150px;
+        }
+
+        button {
+            padding: 8px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Barrel Structural Health Monitoring Console</h1>
+
+<div class="grid">
+
+    <div class="panel">
+        <div>Temperature (K)</div>
+        <div class="value" id="temp">0</div>
+    </div>
+
+    <div class="panel">
+        <div>Acceleration (m/s²)</div>
+        <div class="value" id="vibration">0</div>
+    </div>
+
+    <div class="panel">
+        <div>Strain</div>
+        <div class="value" id="strain">0</div>
+    </div>
+
+    <div class="panel">
+        <div>System Health</div>
+        <div style="height:150px;">
+            <canvas id="healthGauge"></canvas>
+        </div>
+    </div>
+
+    <div class="panel full-width">
+        <div>Thermal & Vibration Trend</div>
+        <div class="chart-wrapper">
+            <canvas id="mainChart"></canvas>
+        </div>
+    </div>
+
+    <div class="panel full-width">
+        <div>Stress vs Strain Curve</div>
+        <div class="chart-wrapper">
+            <canvas id="stressStrainChart"></canvas>
+        </div>
+    </div>
+
+    <div class="panel full-width">
+        <div>Cycle History</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cycle</th>
+                    <th>Temp</th>
+                    <th>Vibration</th>
+                    <th>Health</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="cycleHistory"></tbody>
+        </table>
+    </div>
+
+</div>
+</div>
+
+<!-- Initialization Modal -->
+<div id="initModal">
+    <div id="initBox">
+        <h3>Enter Already Used Cycles</h3>
+        <input type="number" id="initCycles" value="2000">
+        <br>
+        <button onclick="initializeSystem()">Start Monitoring</button>
+    </div>
+</div>
+
+</body>
+</html>
